@@ -1,0 +1,29 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+
+# Load the sensor data and maintenance records
+sensor_data = pd.read_csv('sensor_data.csv')
+maintenance_records = pd.read_csv('maintenance_records.csv')
+
+# Merge the sensor data and maintenance records
+data = sensor_data.merge(maintenance_records, on='equipment_id')
+
+# Select the relevant features from the sensor data
+features = ['temperature', 'vibration', 'pressure', 'current']
+
+# Split the data into training and testing sets
+X = data[features]
+y = data['failed']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Train a Random Forest classifier
+classifier = RandomForestClassifier()
+classifier.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = classifier.predict(X_test)
+
+# Evaluate the accuracy of the model
+accuracy = classifier.score(X_test, y_test)
+print('Accuracy:', accuracy)
